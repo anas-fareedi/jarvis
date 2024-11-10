@@ -2,9 +2,13 @@ import speech_recognition as sr
 import pyttsx3
 import webbrowser
 import musicLibrary
+import requests
+
 
 recognizer=sr.Recognizer()
 engine = pyttsx3.init()
+
+newAPI = "efe7f57509554812b0496620bec9f158"
 
 def speak(text):
     engine.say(text)
@@ -18,7 +22,7 @@ if __name__=="__main__":
        
             with sr.Microphone() as source:
                 print("listining")
-                audio = recognizer.listen(source,timeout=5)
+                audio = recognizer.listen(source,timeout=5,phrase_time_limit=1)
                 
             print("recognizing..")
         
@@ -60,8 +64,21 @@ if __name__=="__main__":
                 elif command.lower().startswith("play"):
                     song =command.lower().split(" ")[1]
                     link = musicLibrary.music[song]
-                    webbrowser.open(link)
+                    webbrowser.open(link)                    
                     
+                elif "news" in command.lower():
+                    r=requests.get(f"https://newsapi.org/v2/top-headlines?country=us&apiKey={newAPI}")
+                    if r.status_code == 200:
+                        #parse json response
+                        data = r.json()
+                        #extract article
+                        articles = data.get('articles',[])
+                        
+                        for article in articles[:5]:
+                            speak(article['title'])
+                            print(article['title'])
+                            
+                            
             except sr.UnknownValueError:
                 print("Could not understand the audio.")
                 speak("Sorry, I did not catch that.")
