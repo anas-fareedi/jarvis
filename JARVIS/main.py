@@ -1,6 +1,7 @@
-import  speech_recognition as sr
+import speech_recognition as sr
 import pyttsx3
 import webbrowser
+import musicLibrary
 
 recognizer=sr.Recognizer()
 engine = pyttsx3.init()
@@ -38,6 +39,7 @@ if __name__=="__main__":
                 elif "brave" in command.lower():
                     webbrowser.open("https://www.brave.com")
                     speak("Opening brave.")
+
                     
                 elif "instagram" in command.lower():
                     webbrowser.open("https://www.instagram.com")
@@ -54,6 +56,11 @@ if __name__=="__main__":
                 elif " linkedin" in command.lower():
                     webbrowser.open("https://www.linkedin.com")
                     speak("Opening linkedin .")
+                
+                elif command.lower().startswith("play"):
+                    song =command.lower().split(" ")[1]
+                    link = musicLibrary.music[song]
+                    webbrowser.open(link)
                     
             except sr.UnknownValueError:
                 print("Could not understand the audio.")
